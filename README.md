@@ -1,5 +1,7 @@
 # Clevo Control Panel
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 > 轻量、便携的蓝天（Clevo）模具控制面板 —— 用原生 WPF 替代笨重的原厂 Control Center，直接通过 InsydeDCHU / ACPI Bridge 控制 EC。
 
 ![性能模式](docs/preview-performance.png)
@@ -86,6 +88,12 @@ docs/                       截图
 - 作者：**xukuncai**
 - 邮箱：**xukuncai0001@gmail.com**
 
+## 许可证
+
+本项目代码采用 [MIT License](LICENSE) 开源。
+
+OEM 的 `InsydeDCHU.dll`、AcpiBridge 驱动及固件不包含在本仓库中，其使用与再分发仍受原厂许可约束。
+
 ## 免责声明
 
-本项目为个人独立开发，与 Clevo、Insyde 及任何 OEM 厂商无关联。风扇、功耗与灯效控制存在硬件风险，请自行评估并在自己的机型上小范围验证。仓库不包含原厂 DLL、驱动或固件，相关组件的使用与再分发请遵守原厂许可。未指定开源许可证；如需商用或二次分发，请先联系作者。
+本项目为个人独立开发，与 Clevo、Insyde 及任何 OEM 厂商无关联。风扇、功耗与灯效控制存在硬件风险，请自行评估并在自己的机型上小范围验证。
