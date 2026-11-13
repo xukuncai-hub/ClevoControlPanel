@@ -19,3 +19,6 @@ crash.log
 ORIGINAL_REQUEST.md
 PROJECT.md
 TEST_INFRA.md
+
+# Local publish output
+dist/
