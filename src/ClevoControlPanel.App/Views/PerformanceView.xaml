@@ -1,0 +1,158 @@
+<UserControl x:Class="ClevoControlPanel.App.Views.PerformanceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignWidth="900" d:DesignHeight="700">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="2,4,18,20">
+            <TextBlock Text="性能模式" Style="{StaticResource PageTitle}" />
+            <TextBlock Text="切换系统功耗与散热策略。每个模式会独立记住上次使用的风扇模式与偏移量。"
+                       Style="{StaticResource PageSubtitle}" Margin="0,6,0,20" />
+
+            <Border Style="{StaticResource CardBorder}" Margin="0,0,0,16" Padding="20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Width="52" Height="52" CornerRadius="14" Background="#1F4CC2FF" VerticalAlignment="Top">
+                        <ui:SymbolIcon Symbol="ArrowSync24" FontSize="25" Foreground="#4CC2FF" />
+                    </Border>
+
+                    <StackPanel Grid.Column="1" Margin="16,0,16,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="自动模式" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <Border Background="#1F4CC2FF" CornerRadius="7" Padding="7,2" Margin="10,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="POWER ADAPTIVE" FontSize="9.5" FontWeight="SemiBold"
+                                           Foreground="#4CC2FF" />
+                            </Border>
+                            <Border Background="#1F4CC2FF" CornerRadius="7" Padding="7,2" Margin="6,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding AutoEffectiveModeTitle, StringFormat=当前 {0}}"
+                                           FontSize="10.5" FontWeight="SemiBold" Foreground="#4CC2FF" />
+                            </Border>
+                        </StackPanel>
+                        <TextBlock Margin="0,6,0,0" Style="{StaticResource MutedText}"
+                                   Text="根据功耗指数（CPU 负载、CPU/GPU 温度、交流或电池供电）自动在安静、省电、娱乐、性能之间切换；带迟滞与切换冷却，避免频繁跳档。" />
+                        <TextBlock Margin="0,8,0,0" FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}" Text="{Binding AutoModeStatusText}" />
+                    </StackPanel>
+
+                    <ToggleButton Grid.Column="2" Style="{StaticResource SwitchToggleStyle}"
+                                  IsChecked="{Binding IsAutoMode, Mode=TwoWay}" VerticalAlignment="Center" />
+                </Grid>
+            </Border>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="模式预设" Style="{StaticResource SectionTitle}" VerticalAlignment="Center" />
+                <TextBlock Text="点击卡片可随时切换并退出自动模式" Style="{StaticResource MutedText}" Margin="10,1,0,0" VerticalAlignment="Center" />
+            </StackPanel>
+
+            <ListBox ItemsSource="{Binding PowerModeOptions}"
+                     SelectedItem="{Binding SelectedPowerModeOption, Mode=TwoWay}"
+                     Style="{StaticResource SelectionListBox}"
+                     Margin="-6,0,-6,4">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="2" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource SelectionListBoxItem}">
+                        <Setter Property="Margin" Value="6,0,6,12" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border x:Name="Card" Style="{StaticResource CardBorder}" Padding="0" MinHeight="148">
+                            <Grid>
+                                <!-- Selection and hover subtle tint overlay -->
+                                <Border x:Name="SelectionOverlay"
+                                        CornerRadius="11"
+                                        Background="{Binding AccentBrush}"
+                                        Opacity="0"
+                                        IsHitTestVisible="False" />
+
+                                <Grid Margin="20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Width="52" Height="52" CornerRadius="14"
+                                            Background="{Binding IconBackgroundBrush}" VerticalAlignment="Top">
+                                        <ui:SymbolIcon Symbol="{Binding Icon}" FontSize="25"
+                                                       Foreground="{Binding AccentBrush}" />
+                                    </Border>
+
+                                    <StackPanel Grid.Column="1" Margin="16,0,12,0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Title}" FontSize="18" FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                       VerticalAlignment="Center" />
+                                            <Border x:Name="ActiveBadge" Visibility="Collapsed"
+                                                    Background="{Binding IconBackgroundBrush}"
+                                                    CornerRadius="7" Padding="7,2" Margin="10,0,0,0"
+                                                    VerticalAlignment="Center">
+                                                <TextBlock Text="已启用" FontSize="10.5" FontWeight="SemiBold"
+                                                           Foreground="{Binding AccentBrush}" />
+                                            </Border>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding Subtitle}" FontSize="12.5" FontWeight="SemiBold" Margin="0,5,0,0"
+                                                   Foreground="{Binding AccentBrush}" />
+                                        <TextBlock Text="{Binding Detail}" FontSize="12.5" Margin="0,10,0,0"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                    </StackPanel>
+
+                                    <ui:SymbolIcon x:Name="CheckIcon" Grid.Column="2" Symbol="CheckmarkCircle24"
+                                                   FontSize="22" Opacity="0"
+                                                   Foreground="{Binding AccentBrush}"
+                                                   VerticalAlignment="Top" />
+                                </Grid>
+                            </Grid>
+                        </Border>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsMouseOver}"
+                                         Value="True">
+                                <Setter TargetName="SelectionOverlay" Property="Opacity" Value="0.05" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsSelected}"
+                                         Value="True">
+                                <Setter TargetName="Card" Property="BorderBrush" Value="{Binding AccentBrush}" />
+                                <Setter TargetName="Card" Property="BorderThickness" Value="1.8" />
+                                <Setter TargetName="SelectionOverlay" Property="Opacity" Value="0.10" />
+                                <Setter TargetName="ActiveBadge" Property="Visibility" Value="Visible" />
+                                <Setter TargetName="CheckIcon" Property="Opacity" Value="1" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Border Style="{StaticResource CardBorder}" Padding="18">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Border Width="38" Height="38" CornerRadius="10" VerticalAlignment="Top"
+                            Background="{DynamicResource SubtleFillColorSecondaryBrush}">
+                        <ui:SymbolIcon Symbol="Info24" FontSize="19"
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="14,0,0,0">
+                        <TextBlock Text="模式与风扇联动" Style="{StaticResource SectionTitle}" />
+                        <TextBlock Margin="0,5,0,0" Style="{StaticResource MutedText}"
+                                   Text="切换性能模式时，应用会先保存当前风扇配置，再恢复目标模式上次保存的风扇策略与偏移。Turbo 强冷是独立的高优先级覆盖，关闭后回到自动曲线。" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

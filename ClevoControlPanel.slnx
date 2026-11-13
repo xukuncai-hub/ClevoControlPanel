@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ClevoControlPanel.App/ClevoControlPanel.App.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="src/ClevoControlPanel.Core/ClevoControlPanel.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ClevoControlPanel.Core.Tests/ClevoControlPanel.Core.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="tests/ClevoControlPanel.Tests/ClevoControlPanel.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
+  </Folder>
+</Solution>

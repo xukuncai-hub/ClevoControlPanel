@@ -1,0 +1,21 @@
+# Build output
+bin/
+obj/
+.vs/
+.vscode/
+*.user
+*.suo
+*.pdb
+*.tmp
+
+# Local deliverables and OEM binaries
+InsydeDCHU.dll
+*.exe
+crash.log
+*.log
+
+# Internal notes
+.agents/
+ORIGINAL_REQUEST.md
+PROJECT.md
+TEST_INFRA.md

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PlatformTarget>x64</PlatformTarget>
+    <Platforms>x64</Platforms>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <RootNamespace>ClevoControlPanel.Core</RootNamespace>
+    <AssemblyName>ClevoControlPanel.Core</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="InsydeDCHU.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
