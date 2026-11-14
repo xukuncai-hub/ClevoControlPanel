@@ -193,15 +193,36 @@ public sealed class AutoModeController
 
     private static double ComputePowerIndex(TelemetryData telemetry, double cpuLoadPercent)
     {
-        double cpuNormalized = Math.Clamp((telemetry.CpuTemperatureCelsius - 45.0) / 50.0 * 100.0, 0, 100);
+        // 1. Normalized thermal scores (0..100)
+        // CPU baseline 45°C -> 0, 90°C -> 100
+        double cpuNormalized = Math.Clamp((telemetry.CpuTemperatureCelsius - 45.0) / 45.0 * 100.0, 0, 100);
+
+        // GPU baseline 45°C -> 0, 83°C -> 100 (discrete laptop GPUs operate at lower thermal targets than CPUs)
         double gpuNormalized = telemetry.IsGpuActive
-            ? Math.Clamp((telemetry.GpuTemperatureCelsius - 45.0) / 45.0 * 100.0, 0, 100)
+            ? Math.Clamp((telemetry.GpuTemperatureCelsius - 45.0) / 38.0 * 100.0, 0, 100)
             : 0;
 
-        return Math.Clamp(
-            (cpuLoadPercent * 0.55) + (cpuNormalized * 0.25) + (gpuNormalized * 0.20),
-            0,
-            100);
+        // 2. Dual-source thermal stress: whichever chip is hotter dominates the cooling and power profile
+        double maxTempNorm = Math.Max(cpuNormalized, gpuNormalized);
+        double minTempNorm = Math.Min(cpuNormalized, gpuNormalized);
+        double thermalStress = (maxTempNorm * 0.70) + (minTempNorm * 0.30);
+
+        // 3. System activity estimation:
+        // In modern gaming or GPU workloads, CPU overall utilization is often only 15-30% on multi-core chips,
+        // while the GPU is saturated at 100% and drawing heavy wattage.
+        // When the discrete GPU is active and elevated in temperature, lift the effective activity floor.
+        double effectiveLoad = Math.Clamp(cpuLoadPercent, 0, 100);
+        if (telemetry.IsGpuActive && telemetry.GpuTemperatureCelsius >= 60)
+        {
+            // At GPU 60°C -> boost begins; at GPU 76°C+ -> guarantees at least ~55-65% effective activity
+            double gpuActivityFloor = Math.Clamp((telemetry.GpuTemperatureCelsius - 55.0) / 25.0 * 65.0, 0, 65);
+            effectiveLoad = Math.Max(effectiveLoad, gpuActivityFloor);
+        }
+
+        // 4. Combine effective activity (40%) and thermal stress (60%)
+        // Prioritizing thermal stress ensures the system responds quickly to elevated temperatures
+        // and unlocks performance mode before thermal throttling occurs.
+        return Math.Clamp((effectiveLoad * 0.40) + (thermalStress * 0.60), 0, 100);
     }
 
     private static int ModeRank(PowerMode mode) => mode switch

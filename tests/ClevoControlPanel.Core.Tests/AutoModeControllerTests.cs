@@ -59,6 +59,25 @@ public class AutoModeControllerTests
     }
 
     [Fact]
+    public void GpuGaming_ElevatedTempsWithLowCpuLoad_SwitchesToPerformance()
+    {
+        using var hw = new MockHwService();
+        var controller = new AutoModeController(hw, FastOptions());
+        controller.Enable();
+
+        // Real-world scenario: RTX 4060 gaming load with GPU at 77°C, CPU at 84°C, but CPU load is only 18%
+        var gamingSample = Sample(cpuTemp: 84, gpuTemp: 77, gpuActive: true);
+
+        controller.Observe(gamingSample, cpuLoadPercent: 18, onBattery: false);
+        controller.EffectiveMode.Should().Be(PowerMode.Entertainment);
+
+        controller.Observe(gamingSample, cpuLoadPercent: 18, onBattery: false);
+        controller.EffectiveMode.Should().Be(PowerMode.Performance);
+        hw.GetPowerMode().Should().Be(PowerMode.Performance);
+        controller.LastPowerIndex.Should().BeGreaterThanOrEqualTo(64);
+    }
+
+    [Fact]
     public void LowLoad_SwitchesToQuiet_AfterDownDwell()
     {
         using var hw = new MockHwService();
