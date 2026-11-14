@@ -130,15 +130,16 @@ public partial class TrayFlyoutWindow : Window
         double workBottom = hasMonitor ? monitorInfo.rcWork.Bottom / scaleY : SystemParameters.WorkArea.Bottom;
 
         const double shadowPad = 14.0;
-        const double edgeGap = 6.0;
+        const double edgeGap = 12.0;
+        const double bottomOffset = 26.0; // Raise flyout to avoid overlapping the clicked tray icon / overflow area
 
         double targetLeft = cursorDipX - dipWidth * 0.5;
-        double targetTop = cursorDipY - dipHeight + shadowPad;
+        double targetTop = cursorDipY - dipHeight + shadowPad - bottomOffset;
 
         double minLeft = workLeft + edgeGap - shadowPad;
         double maxLeft = workRight - dipWidth - edgeGap + shadowPad;
         double minTop = workTop + edgeGap - shadowPad;
-        double maxTop = workBottom - dipHeight - edgeGap + shadowPad;
+        double maxTop = workBottom - dipHeight - bottomOffset + shadowPad;
 
         Left = Math.Clamp(targetLeft, minLeft, Math.Max(minLeft, maxLeft));
         Top = Math.Clamp(targetTop, minTop, Math.Max(minTop, maxTop));
